@@ -1,0 +1,12 @@
+Data dictionary for Dataset A.
+
+This data consists of volunteer subjects tested at a local university over a two month period. Patients were randomly assigned to have either a treatment or placebo. Since the study was double-blinded, neither the nurses who conducted the measurements nor the patients knew whether they received placebo or not.
+
+patientID - unique patient identifier
+startWeights - weight of patient at start of study, in pounds. Note that this measurement was conducted automatically and entered into the patient record. A value of 9999 means that there was an error at the scale.
+endWeights - weight of patient collected at second datapoint, in pounds. Note that this measurement was conducted automatically. A value of 9999 means that there was an error at the scale.
+treatment - whether patient received treatment or placebo.
+timeElapsed - time elapsed between measurements (in days).
+gender - gender of patient. A value of NA means that the patient did not want their gender recorded. 
+age - age of patients (in years)
+Nurse - unique nurse identifier who took measurements.
