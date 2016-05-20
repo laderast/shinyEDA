@@ -1,0 +1,140 @@
+---
+title: "Answer Key for EDA"
+author: "Ted Laderas"
+date: "May 19, 2016"
+output: pdf_document
+
+---
+
+```{r global_options, include=FALSE}
+knitr::opts_chunk$set(fig.width=5, fig.height=4,warning=FALSE, message=FALSE)
+```
+
+##Dataset A
+
+There are two things to notice for dataset A. The first can be noticed by looking at the data dictionary. The value of `9999` indicates an error on the scale. If they did not catch it via the data dictionary, then they will notice it when they look at the summaries, histogram and boxplots.
+
+```{r message=FALSE}
+library(ggplot2)
+library(dplyr)
+datasetA <- read.delim("data/datasetA.txt",row.names = 1)
+#show summary of data
+summary(datasetA)
+#show histogram of startWeights - is not very informative because of error value!
+ggplot(datasetA, aes(x=startWeights)) + geom_histogram() +
+  ggtitle("A not very informative histogram")
+```
+
+So the first step is remove rows with these values. After removing those rows with error values, the histogram looks much more informative.
+
+```{r message=FALSE}
+#do filtering to remove those lines with error values
+datasetA <- datasetA %>% filter(startWeights != 9999 & endWeights != 9999)
+
+#do the histogram again
+ggplot(datasetA, aes(x=startWeights)) + geom_histogram() +
+  ggtitle("Filtered data (a more informative histogram)")
+
+#Also there is a difference in weight among genders (most easily seen in boxPlots)
+ggplot(datasetA, aes(x=gender, y=startWeights)) + geom_boxplot() +
+  ggtitle("Boxplot of filtered data (by Gender)")
+```
+
+The second thing to notice is that the data needs to be transformed somehow in order to see the weight loss effect. Here I define a new variable called `weightChange`, which is just `startWeights - endWeights`. Because timeElapsed is variable, I also try to scale `weightChange` by the `timeElapsed` in order to look for a possible linear relationship between the two.
+
+An optional step is to omit NAs, which occur in gender.
+
+```{r}
+datasetA <- datasetA %>% mutate(weightChange = startWeights - endWeights, 
+                              weightChangePerDay = weightChange / timeElapsed)
+datasetA <- na.omit(datasetA)
+
+#show that there is a weightChange effect in those treated 
+#versus those who are not
+ggplot(datasetA, aes(x = treatment, y= weightChange)) + geom_boxplot() +
+  ggtitle("Boxplot of Weight Loss (lbs)")
+```
+
+There is a slight linear relationship between `timeElapsed` and `weightChangePerDay` if we condition by `treatment`, but it can't really be seen by eye due to noise in the data.
+
+```{r}
+ggplot(datasetA, aes(x = timeElapsed, y= weightChangePerDay)) + geom_point() + 
+  facet_wrap(facets = c("treatment")) + ggtitle("Boxplot of Weight Change Per Day")
+```
+
+##Dataset B
+
+Dataset B is a little trickier. Reading the data dictionary, we notice that the units for `startWeight` and `endWeight` are in kg, so that complicates comparing the two datasets. Also, there are patients who do not have a second measurement. Referring to the data dictionary, these patients are ones who dropped out of the study and are thus uninformative to our research question, so we'll remove them.
+
+```{r}
+datasetB <- read.csv("data/datasetB.csv", row.names= 1)
+#show summary before
+summary(datasetB)
+
+datasetB <- na.omit(datasetB)
+#show summary after removing NAs
+summary(datasetB)
+```
+
+However, all is not well. We should start getting suspicious if we look at the crosstabs between staffID1 and staffID2. Why is there `S3` in `staffID1`, but not `staffID2`?
+
+```{r}
+table(datasetB$staffID1, datasetB$staffID2)
+```
+
+Doing our detective work, we start looking at histograms and boxplots of `startWeight`. Hmm, the weights for S3 look strange. They're all the same value!
+
+```{r}
+ggplot(datasetB, aes(x = startWeight)) + geom_histogram() + 
+  facet_wrap(facet=c("staffID1")) +
+  ggtitle("Histogram by staffID1")
+```
+
+Looking at the boxplots will also show this. 
+
+```{r}
+ggplot(datasetB, aes(x= staffID1, y = startWeight)) + geom_boxplot() + 
+  ggtitle("Boxplot by staffID1")
+```
+
+Is this data valid? Better not risk it. We'll take it out. We'll calculate the weight change as weightChange
+
+```{r}
+datasetB <- datasetB %>% mutate(weightChange = startWeight - endWeight)
+ggplot(datasetB, aes(x=treatment, y=weightChange)) + geom_boxplot() +
+  ggtitle("Boxplot with all staff")
+
+datasetB <- datasetB %>% filter(staffID1 != "S3")
+ggplot(datasetB, aes(x=treatment, y=weightChange)) + geom_boxplot() +
+  ggtitle("Boxplot with S3 removed")
+```
+
+Here I convert datasetB's weight loss to pounds, and also scale the weightLoss per day, which seems to be a reasonable way to compare the weight loss across individuals.
+
+```{r}
+datasetB <- datasetB %>% mutate(weightChangeLb = weightChange * 2.2, weightChangePerDay =
+                               weightChangeLb / timeElapsed)
+
+ggplot(datasetB, aes(x=treatment, y=weightChangePerDay)) + geom_boxplot() +
+  ggtitle("Site B")
+```
+
+##Combining the Data
+
+What is the best way to compare the two datasets? Since the timeElapsed seems to differ among the two datasets, we should compare using `weightChangePerDay`. Students should also note the demographics (especially age) are different between the two datasets.
+
+```{r fig.width=5}
+datasetAselect <- datasetA %>% mutate(site="A") %>% select(treatment, weightChangePerDay, site)
+datasetBselect <- datasetB %>% mutate(site="B") %>% select(treatment, weightChangePerDay, site)
+
+datasetCombined <- rbind(datasetAselect, datasetBselect)
+
+#plot all combined data together
+ggplot(datasetCombined, aes(x=treatment, y=weightChangePerDay)) + 
+  geom_boxplot() + ggtitle("Combined and Filtered Data for Both Sites")
+
+#plot all combined data conditioned by site
+ggplot(datasetCombined, aes(x=treatment, y=weightChangePerDay)) + 
+  geom_boxplot() + facet_wrap(facet=c("site")) + 
+  ggtitle("Combined Data By Site")
+```
