@@ -17,7 +17,7 @@ There are two things to notice for dataset A. The first can be noticed by lookin
 ```{r message=FALSE}
 library(ggplot2)
 library(dplyr)
-datasetA <- read.delim("data/datasetA.txt",row.names = 1)
+datasetA <- read.delim("../data/datasetA.txt",row.names = 1)
 #show summary of data
 summary(datasetA)
 #show histogram of startWeights - is not very informative because of error value!
@@ -55,19 +55,12 @@ ggplot(datasetA, aes(x = treatment, y= weightChange)) + geom_boxplot() +
   ggtitle("Boxplot of Weight Loss (lbs)")
 ```
 
-There is a slight linear relationship between `timeElapsed` and `weightChangePerDay` if we condition by `treatment`, but it can't really be seen by eye due to noise in the data.
-
-```{r}
-ggplot(datasetA, aes(x = timeElapsed, y= weightChangePerDay)) + geom_point() + 
-  facet_wrap(facets = c("treatment")) + ggtitle("Boxplot of Weight Change Per Day")
-```
-
 ##Dataset B
 
 Dataset B is a little trickier. Reading the data dictionary, we notice that the units for `startWeight` and `endWeight` are in kg, so that complicates comparing the two datasets. Also, there are patients who do not have a second measurement. Referring to the data dictionary, these patients are ones who dropped out of the study and are thus uninformative to our research question, so we'll remove them.
 
 ```{r}
-datasetB <- read.csv("data/datasetB.csv", row.names= 1)
+datasetB <- read.csv("../data/datasetB.csv", row.names= 1)
 #show summary before
 summary(datasetB)
 
@@ -109,7 +102,7 @@ ggplot(datasetB, aes(x=treatment, y=weightChange)) + geom_boxplot() +
   ggtitle("Boxplot with S3 removed")
 ```
 
-Here I convert datasetB's weight loss to pounds, and also scale the weightLoss per day, which seems to be a reasonable way to compare the weight loss across individuals.
+Here I convert datasetB's weight loss to pounds, and also scale the weightChange per day, which seems to be a reasonable way to compare the weight loss across individuals.
 
 ```{r}
 datasetB <- datasetB %>% mutate(weightChangeLb = weightChange * 2.2, weightChangePerDay =
@@ -123,7 +116,7 @@ ggplot(datasetB, aes(x=treatment, y=weightChangePerDay)) + geom_boxplot() +
 
 What is the best way to compare the two datasets? Since the timeElapsed seems to differ among the two datasets, we should compare using `weightChangePerDay`. Students should also note the demographics (especially age) are different between the two datasets.
 
-```{r fig.width=5}
+```{r}
 datasetAselect <- datasetA %>% mutate(site="A") %>% select(treatment, weightChangePerDay, site)
 datasetBselect <- datasetB %>% mutate(site="B") %>% select(treatment, weightChangePerDay, site)
 

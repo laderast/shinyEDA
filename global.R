@@ -2,18 +2,12 @@ library(shiny)
 library(ggplot2)
 library(dplyr)
 
+###Put Data processing steps here
+#load dataset A
 dataset <- read.delim("data/datasetA.txt",row.names = 1)
 
-#  dataset <- dataset %>% filter(startWeights != 9999 & endWeights != 9999)
-#  dataset <- dataset %>% mutate(weightLoss = startWeights - endWeights, percentWeight = weightLoss / timeElapsed)
-#  dataset <- na.omit(dataset)
-
-dataset <- read.csv("data/datasetB.csv", row.names= 1)
-#dataset <- dataset %>% filter(nurseID != "Nurse3")
-#dataset <- na.omit(dataset)
-#dataset <- dataset %>% mutate(startWeight2 = startWeight * 2.2, 
-#                              endWeight2 = endWeight * 2.2, weightLoss = startWeight2 - endWeight2, 
-#                               percentWeight / timeElapsed)
+#uncomment this line to load dataset B
+#dataset <- read.csv("data/datasetB.csv", row.names= 1)
 
 
 ##Don't modify anything below here, or app won't work properly.
