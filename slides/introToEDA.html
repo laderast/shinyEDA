@@ -290,6 +290,17 @@ newIris &lt;-<span class="st"> </span>iris %&gt;%<span class="st"> </span><span 
 ## 4          4.6         3.1          1.5         0.2  setosa      7.7
 ## 5          5.0         3.6          1.4         0.2  setosa      8.6
 ## 6          5.4         3.9          1.7         0.4  setosa      9.3</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co">#add a column with the same value for each entry</span>
+newIris &lt;-<span class="st"> </span>newIris %&gt;%<span class="st"> </span><span class="kw">mutate</span>(<span class="dt">value =</span> <span class="st">&quot;Site1&quot;</span>)
+
+<span class="kw">head</span>(newIris)</code></pre></div>
+<pre><code>##   Sepal.Length Sepal.Width Petal.Length Petal.Width Species sepalSum value
+## 1          5.1         3.5          1.4         0.2  setosa      8.6 Site1
+## 2          4.9         3.0          1.4         0.2  setosa      7.9 Site1
+## 3          4.7         3.2          1.3         0.2  setosa      7.9 Site1
+## 4          4.6         3.1          1.5         0.2  setosa      7.7 Site1
+## 5          5.0         3.6          1.4         0.2  setosa      8.6 Site1
+## 6          5.4         3.9          1.7         0.4  setosa      9.3 Site1</code></pre>
 </div>
 <div id="chaining-dplyr-commands-using" class="slide section level2">
 <h1>Chaining dplyr commands using <code>%&gt;%</code></h1>
