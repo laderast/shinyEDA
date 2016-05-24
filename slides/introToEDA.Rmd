@@ -1,0 +1,368 @@
+---
+title: "Introduction to EDA"
+author: "Ted Laderas and Shannon McWeeney"
+date: "May 17, 2016"
+output: slidy_presentation
+---
+
+## Needed R Packages
+
+You will need R and Rstudio to run this workshop.
+
+You will need the following packages to do this workshop. Please install these packages using the `install.packages()` command.
+
+```{r message=FALSE}
+library(dplyr)
+library(shiny)
+library(ggplot2)
+```
+
+## Overview For Today
+
+- Mini Lecture (~ 30 min)
+    - What is EDA?
+    - Interactive Visualization
+    - Bare basics of dplyr
+    - Basics of Shiny
+- Workshop: Exploring Weight Loss Datasets (~ 1 hr)
+- Discussion/Wrapup (~ 30 min)
+    - What did you learn?
+    - Building an interactive visualization for sharing
+
+## What is Exploratory Data Analysis (EDA)?
+
+- Pioneered by Tukey
+- Detective work on your data
+- An attitude towards data, not just techniques
+- 'Find patterns, reveal structure, and make tenative model assessments (Behrens)'
+
+## Remember
+
+"Statistical ability, divorced from a scientific intimacy with the fundamental observations, leads nowhere"
+- E.G. Boring, *Mathematical vs. scientific significance*
+
+"Exploratory data analysis can never be the whole story, but nothing else can serve as the foundation stone."
+- John Tukey, *Exploratory Data Analysis*
+
+## EDA is not cheating!
+
+In contrast to *Confirmatory Data Analysis (CDA)*, such as hypothesis testing, the goals of EDA are to:
+
+- Explore qualities of the dataset
+- Assess whether assumptions are met for statistical models
+- Filter and clean data if necessary
+- Transform data into more usable format
+- Make data ready for CDA
+
+EDA is vital when repurposing and reusing data that was collected for another purpose. Don't go in blind!
+
+##Analysis Plan
+
+- All EDA is done in the context of an Analysis Plan
+- Data is collected
+- Data dictionary exists
+- Be prepared to change analysis plan based on your results
+    - Raise red flags on problematic data
+
+## Role of EDA in workflow
+
+EDA is often an iterative process. Updating your analysis plan may be necessary.
+
+Oftentimes, new problems pop up after you solve one. Expect to go through multiple steps.
+
+Similarly, tackle one issue at a time. Don't rush!
+
+![https://upload.wikimedia.org/wikipedia/commons/b/ba/Data_visualization_process_v1.png](https://upload.wikimedia.org/wikipedia/commons/b/ba/Data_visualization_process_v1.png)
+
+
+## EDA: Always read the data dictionary!
+
+Always read the data dictionary if provided! There is often some useful information in there about how the data is represented (such as the units for each column, etc).
+
+![Data Dictionary Example](image/dataDictionary.png)
+
+## R Tools for EDA
+
+- `head()` - Always make sure data is loaded correctly!
+- `summary()` - Look for 'strange' values
+- `table()` - Look for confounding among categorical variables
+- `hist()` - Highlight outliers
+- `boxplot()` - Compare conditional medians and distributions
+- `plot.xy()` - Look for correlations among continuous variables
+
+Not covered here, but also useful (covered in discussion):
+
+- `pca()` - dimensionality reduction to understand variabilty in data
+- `heatmap()` - cluster data to look for groupings in data
+
+## R EDA Tools: `head()`
+
+Sometimes, data is given in a format that has some quirks - always make sure the data is loaded correctly!
+
+- Does file have header or not?
+- Does file have quotes?
+
+```{r}
+data(iris)
+head(iris)
+```
+
+For Rstudio users, `View()` is an extremely useful way to explore smaller datasets (spreadsheet like view of data)
+
+```{r eval=FALSE}
+View(iris)
+```
+
+## R EDA Tools: `summary()`
+
+`summary()` gives a high-level view of data
+
+- Continuous Data: Range of data
+- Categorical Data: What categories exist in data, how are they distributed?
+- Missing values: are covariates missing data?
+
+```{r}
+summary(iris)
+```
+
+## R EDA: table()
+
+If your data contains many categorial variables, you need to check for possible confounding between them.
+
+Examples:
+
+- Data collected by multiple clinics, each assigned to treatment/control
+- Samples processed by different labs
+
+```{r}
+data <- read.delim("confounding.txt")
+
+table(data)
+```
+
+## R EDA: Histograms and Boxplots
+
+Boxplots and histograms can highlight outliers and potential nonsensical values, especially if they are conditioned on categorical variables. 
+
+They can also highlight how normally distributed the data is (important to see if data is satisfying assumptions).
+
+```{r message=FALSE}
+data(iris)
+library(ggplot2)
+
+#normal histogram
+ggplot(iris, aes(x=Sepal.Length)) + geom_histogram()
+
+#use facet_wrap() to condition the plot
+ggplot(iris, aes(x=Sepal.Length)) + geom_histogram() + facet_wrap(c("Species"))
+
+#show boxplot, using Species as an x variable
+ggplot(iris, aes(x=Species,y=Sepal.Length)) + geom_boxplot()
+```
+
+## R EDA: X-Y plots
+
+Highlight correlation between continuous variables. Can be really important when you are building linear models and selecting variables.
+
+```{r}
+#xy plot between Sepal.Width and Sepal.Length
+ggplot(iris, aes(x=Sepal.Width, y=Sepal.Length)) + geom_point()
+
+#show a pairs() plot
+pairs(iris[,1:4])
+```
+
+## Filtering Dataset: dplyr package
+
+While conducting your EDA, you may want to filter out data and recalculate values and assesss the impact of these statements. I will show some basics to use the `dplyr` package to do this. It's a package made for manipulating data.frames, which comes in handy.
+
+dplyr has lots of commands, but I will just show three commands:
+
+- `filter()` - remove rows according to criteria
+- `select()` - select columns by name
+- `mutate()` - calculate new column variables by manipulating data
+
+## dplyr::filter()
+
+`filter()` lets you select rows according to a criteria. You can use `|` (OR) and `&` (AND) to chain together logical statements.
+
+```{r message=FALSE}
+library(dplyr)
+newIris <- iris %>% filter(Species == "setosa" & Sepal.Length > 5)
+
+head(newIris)
+```
+
+Note that any statement or function that produces a boolean vector (such as `is.na(Species)`) can be used here.
+
+## dplyr::select()
+
+`select()` lets you select columns in your dataset.
+
+```{r}
+library(dplyr)
+newIris <- iris %>% select(Sepal.Width, Species)
+
+head(newIris)
+```
+
+## dplyr::mutate()
+
+`mutate()` is one of the most useful dplyr commands. You can use it to transform data and add it as a new column into the data.frame
+
+```{r}
+library(dplyr)
+newIris <- iris %>% mutate(sepalSum = Sepal.Length + Sepal.Width)
+
+head(newIris)
+
+#add a column with the same value for each entry
+newIris <- newIris %>% mutate(value = "Site1")
+
+head(newIris)
+```
+
+## Chaining dplyr commands using `%>%`
+
+The power of dplyr comes from the fact that you can chain multiple steps.
+
+Example: Let's calculate a new column `SepalMean` on `iris` and filter the dataset on this new variable.
+
+```{r}
+library(dplyr)
+data(iris)
+
+iris2 <- iris %>% mutate(SepalMean = (Sepal.Length + Sepal.Width) / 2) %>%
+  filter(SepalMean > 4)
+
+nrow(iris)
+nrow(iris2)
+
+head(iris2)
+```
+
+##Comparing Datasets
+
+If you want to compare datasets, you will need to compare similar quantities. Data transformation is needed.
+
+What will you need to do in order to combine two datasets into one?
+
+##What is Shiny?
+
+Shiny is a web presentation framework that allows you to take R code and make it into an interactive visualization. 
+
+We'll use it for the workshop today.
+
+##Running a Shiny App
+
+You can use `runApp()` if your working directory is the same as the app, but I usually just use the `runApp` button in the corner of the Rstudio window when I am editing `global.R`, `ui.R`, or `server.R`.
+
+![Running the shiny app](image/runningShinyApps.png)
+
+##Using the EDA Shiny App
+
+For the workshop, you'll use the Shiny App to do some EDA. You will need to be familiar with the basic architecture of the app.
+
+- `global.R` - This is where you'll do the majority of the work - place filtering and processing steps here. Any objects loaded here can be seen by both the `ui.R` and `server.R`.
+- `ui.R` - This is where the user interface and display elements are. Communicates with `server.R` with `input` object (values from ui Elements). Gets output elements with the `output` object provided by `server.R`.
+- `server.R` - All of the actual processing and plotting goes here. Gets UI values from `input` object and places the elements to be plotted in the `output` object so `ui.R` can access it.
+
+![Shiny Architecture](image/shinyArchitecture.png)
+
+##The Problem
+
+An experimental weight loss drug was first tested at one site with volunteers (DatasetA). Given the small sample size, volunteers from an additional site were recruited (DatasetB). 
+
+1) Your goal is to conduct EDA on the two separate datasets to assess whether there was an effect from the weight loss drug. If you notice any issues in the data, will you need to filter or transform the data?
+2) Given your EDA of both datasets, can you combine the datasets into a single dataset for analysis? What will you need to do to compare them?
+
+Go as far as you can. Remember to use your post-its to show your status and whether you need help.
+
+
+##Go For It!
+
+EDA is a puzzle with real-world consequences. Use your tools to understand the data!
+
+Get the workshop materials here:
+
+```{r eval=FALSE}
+git clone http://github.com/laderast/shinyEDA
+```
+
+in the `shinyEDA/` folder, open up the `.Rproj` file
+
+Datasets are in the `data/` folder along with the data dictionaries and readmes. 
+
+Read `weightLossAssignment.pdf` for more details.
+
+
+##Review Results of EDA Here
+
+Results? Conclusions about the data?
+
+##Resources
+
+Be curious about the data. Don't be afraid!
+
+- [Exploratory Data Analysis by Tukey](http://www.amazon.com/Exploratory-Data-Analysis-John-Tukey/dp/0201076160) - The original classic treatise.
+- [Shiny at RStudio](http://shiny.rstudio.com) - More information on Shiny
+- http://github.com/laderast/shinyTutorial - My shiny tutorial.
+- https://github.com/justmarkham/dplyr-tutorial - a great dplyr tutorial (comes with videos, too!)
+
+
+##Guidelines to Developing an Interactive Visualization
+
+Now that you have done the EDA, and possibly run the confirmatory data analysis, you might want to share a portion of your analysis with others. Here are some simple guidelines to sharing a visualization.
+
+- Have something to communicate about the data
+- Don't show the raw data!
+- Show only selected parameters
+- Filter/transform the data to emphasize your point
+- Interpret your results for your audience
+- Is the data yours to share? (PHI/Privacy)
+- Licensing your visualization
+
+##Your visualization should have a point
+
+Unlike EDA, the point of sharing an interactive visualization should be to highlight an aspect of the data.
+
+Examples:
+
+- Showing effect of binning on data
+- Showing possible confounders in data
+- Showing that a measured effect is meaningful to your stakeholders, under various conditions
+
+##Don't show the Raw Data
+
+If you have done due diligence with EDA and filtered your data, use that version of the data for your presentation, unless you are making a point about the raw data.
+
+##Simpler is Better
+
+Avoid presenting data in a way that is overly whiz-bang. The presentation should not get in the way of your point.
+
+Use tabs to separate out visualizations that explore different aspects of the data.
+
+##Only expose relevant interactive parameters
+
+Your plots will have multiple parameters, but you should be selective in what you expose. Make sure the parameters you choose are highlighting your point. Paradoxically, the less control you provide, the better.
+
+Examples:
+
+- May choose to only expose certain categorical variables
+- Might remove UI controls to reduce confusion.
+
+##Provide help if your visualization is 'non-standard'.
+
+Get feedback before going live with your visualization. Some controls may not be obvious to some people. Provide help tooltips where people are confused. The `shinyBS` (as in Bootstrap) package can be great for adding tooltips.
+
+##Provide your interpretation of the data
+
+Anyone can push a button and run an analysis. Data scientists are most valuable when they provide interpretation.
+
+- Is the measured effect meaningful to your stakeholders?
+- What steps did you have to take to compare the data?
+
+##Privacy Issues and Licensing
+
+Always be aware when sharing a data visualization about privacy issues and any licensing issues about the underlying data. 
+Be proactive and communicate with the owners. 
