@@ -117,10 +117,21 @@ ggplot(datasetB, aes(x=treatment, y=weightChangePerDay)) + geom_boxplot() +
 What is the best way to compare the two datasets? Since the timeElapsed seems to differ among the two datasets, we should compare using `weightChangePerDay`. Students should also note the demographics (especially age) are different between the two datasets.
 
 ```{r}
-datasetAselect <- datasetA %>% mutate(site="A") %>% select(treatment, weightChangePerDay, site)
-datasetBselect <- datasetB %>% mutate(site="B") %>% select(treatment, weightChangePerDay, site)
+#Code to combine the two datasets
+#Here we select columns for each dataset (treatment and weight)
+#in order to make the two datasets comparable, we make both genders lowercase 
+#(coverting it to a character), but then we have to recast it as a 
+#factor (categorical variable)
+datasetAselect <- datasetA %>% mutate(site="A", gender=factor(tolower(gender))) %>% 
+  select(treatment, weightChangePerDay, site, gender)
+
+datasetBselect <- datasetB %>% mutate(site="B", gender=factor(tolower(gender))) %>% 
+  select(treatment, weightChangePerDay, site, gender)
 
 datasetCombined <- rbind(datasetAselect, datasetBselect)
+
+#have to recast site as a factor because it's a character
+datasetCombined$site <- factor(datasetCombined$site)
 
 #plot all combined data together
 ggplot(datasetCombined, aes(x=treatment, y=weightChangePerDay)) + 
