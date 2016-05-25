@@ -300,6 +300,12 @@ Read `weightLossAssignment.pdf` for more details.
 
 Results? Conclusions about the data?
 
+For each issue with the data: 
+
+- What was the issue?
+- What did you decide to do about it?
+- What was the impact of your action?
+
 ##Resources
 
 Be curious about the data. Don't be afraid!
