@@ -6,6 +6,10 @@ library(dplyr)
 #load dataset A
 
 datasetA <- read.delim("data/datasetA.txt",row.names = 1)
+datasetA <- datasetA %>% filter(startWeights != 9999 & endWeights != 9999)
+datasetA <- datasetA %>% mutate(weightLoss = startWeights - endWeights, 
+                                weightLossPerDay = weightLoss / timeElapsed)
+datasetA <- na.omit(datasetA)
 dataset <- datasetA
 
 #Code to process dataset B

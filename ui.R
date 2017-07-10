@@ -18,7 +18,7 @@ shinyUI(navbarPage(
     tabPanel("Crosstab Explorer",
              selectInput(inputId = "crossTab1", "Select Crosstab Variable (x)", choices=categoricalVars, selected=categoricalVars[1]),
              selectInput(inputId = "crossTab2", "Select Crosstab Variable (y)", choices=categoricalVars, selected=categoricalVars[1]),
-             tableOutput("crossTab")),
+             verbatimTextOutput("crossTab")),
     tabPanel("Histogram Explorer",
               fluidRow(
                 column(width = 4,selectInput(inputId = "numericVarHist", "Select Numeric Variable", 
@@ -27,11 +27,6 @@ shinyUI(navbarPage(
                   choices = c("none",categoricalVars), selected = "none")),
               column(width=4, sliderInput("bins", "Number of bins:", min = 1, max = 50,value = 30))),
               plotOutput("distPlot")
-             # fluidRow(column(width=3, sliderInput("filterValues", "Filter Out Values", min=0, max=9999, value=9999)),
-             #          column(width=3, textInput("textFilter", "Remove Values", value="")),
-             #          column(width=3, numericInput("scaleValues", "Scale Values", value=1))
-             #          )
-             
              ),
       tabPanel("Boxplot Explorer",
                fluidRow(column(width = 4, selectInput(inputId = "numericVarBox", "Select Numeric Variable", 
@@ -39,11 +34,6 @@ shinyUI(navbarPage(
                column(width=4,selectInput(inputId = "catVarBox", "Select Category to Condition on", 
                            choices = categoricalVars, selected=categoricalVars[1]))),
                plotOutput("boxPlot")
-               # 
-               # fluidRow(column(width=3, sliderInput("filterValues", "Filter Out Values", min=0, max=9999, value=9999)),
-               #          column(width=3, textInput("textFilter", "Remove Values", value="")),
-               #          column(width=3, numericInput("scaleValues", "Scale Values", value=1))
-               # )
                ),
      tabPanel("Correlation Explorer",
               selectInput(inputId = "numericVarCor1", "Select X variable", 
