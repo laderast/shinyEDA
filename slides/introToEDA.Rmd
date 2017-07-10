@@ -12,9 +12,8 @@ You will need R and Rstudio to run this workshop.
 You will need the following packages to do this workshop. Please install these packages using the `install.packages()` command.
 
 ```{r message=FALSE}
-library(dplyr)
+library(tidyverse)
 library(shiny)
-library(ggplot2)
 ```
 
 ## Overview For Today

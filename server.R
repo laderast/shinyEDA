@@ -20,7 +20,7 @@ shinyServer(function(input, output) {
     summary(dataOut())
   })
   
-  output$crossTab <- renderTable({
+  output$crossTab <- renderPrint({
     #ggplot()
     out <- dataOut()[,c(input$crossTab1, input$crossTab2)]
     tab <- table(out)

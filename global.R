@@ -4,11 +4,14 @@ library(dplyr)
 
 ###Put Data processing steps here
 #load dataset A
-dataset <- read.delim("data/datasetA.txt",row.names = 1)
 
-#uncomment this line to load dataset B
-#dataset <- read.csv("data/datasetB.csv", row.names= 1)
+datasetA <- read.delim("data/datasetA.txt",row.names = 1)
+dataset <- datasetA
 
+#Code to process dataset B
+
+datasetB <- read.csv("data/datasetB.csv", row.names = 1)
+#dataset <- datasetB
 
 ##Don't modify anything below here, or app won't work properly.
 
