@@ -49,6 +49,8 @@ Cribbed from my twitter bio:
 + Statistical Procedures Badly Applied
 + Bad Analysis, Bad Publications, Bad Science!
 
+![Datasaurus Dozen](image/DataSaurus-Dozen.gif)
+
 ## The Approach
 
 gRadual exposuRe can lessen fear...
@@ -104,7 +106,7 @@ Always read the data dictionary if provided! There is often some useful informat
 
 ## Wrap them up in a Shiny wrapper
 
-- Lower the mental effort to ask questions
+- Lower the mental effort to ask questions of data
 - Everything works on the data types (categorical vs. numeric) in a `data.frame`
 - Each tab lets you ask particular questions of data
 
