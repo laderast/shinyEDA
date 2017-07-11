@@ -51,7 +51,7 @@ Cribbed from my twitter bio:
 
 ## The Approach
 
-Gradual exposure can lessen fear...
+gRadual exposuRe can lessen fear...
 
 + Provide a synthetic dataset that is a puzzle
 + Provide a research question
@@ -59,6 +59,8 @@ Gradual exposure can lessen fear...
 + Clean Data using `dplyr`
 + Iterate EDA and cleaning
 + Answer the question
+
+![Hadley Wickham's Data Wrangling Diagram](image/data-science-wrangle.png)
 
 ## What is Exploratory Data Analysis (EDA)?
 
@@ -187,7 +189,7 @@ For the workshop, you'll use the Shiny App to do some EDA. You will need to be f
 
 ##The Problem
 
-An experimental weight loss drug was first tested at one site with volunteers (DatasetA). Given the small sample size, volunteers from an additional site were recruited (DatasetB). 
+An experimental weight loss drug was first tested at one site with volunteers (DatasetA). Given the small sample size, volunteers from an additional site were recruited (DatasetB). Read the data dictionaries!
 
 1) Your goal is to conduct EDA on the two separate datasets to assess whether there was an effect from the weight loss drug. If you notice any issues in the data, will you need to filter or transform the data?
 2) Given your EDA of both datasets, can you combine the datasets into a single dataset for analysis? What will you need to do to compare them?
