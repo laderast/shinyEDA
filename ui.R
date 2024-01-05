@@ -17,7 +17,7 @@ shinyUI(navbarPage(
              verbatimTextOutput("summaryTable")),
     tabPanel("Crosstab Explorer",
              selectInput(inputId = "crossTab1", "Select Crosstab Variable (x)", choices=categoricalVars, selected=categoricalVars[1]),
-             selectInput(inputId = "crossTab2", "Select Crosstab Variable (y)", choices=categoricalVars, selected=categoricalVars[1]),
+             selectInput(inputId = "crossTab2", "Select Crosstab Variable (y)", choices=categoricalVars, selected=categoricalVars[2]),
              verbatimTextOutput("crossTab")),
     tabPanel("Histogram Explorer",
               fluidRow(

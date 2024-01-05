@@ -23,5 +23,5 @@ datasetB <- read.csv("data/datasetB.csv", row.names = 1)
 varClass <- sapply(dataset, class)
 
 #separate the variables into each type
-categoricalVars <- names(varClass[varClass == "factor"])
+categoricalVars <- names(varClass[varClass == "character"])
 numericVars <- names(varClass[varClass %in% c("numeric", "integer")])
